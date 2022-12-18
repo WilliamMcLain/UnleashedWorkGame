@@ -1,0 +1,32 @@
+modules:
+  jira:workflowCondition:
+    - key: work-and-gam-e-appapp-example-workflow-condition-custom-ui-expression
+      name: Work-and-gam-e-appapp
+      description: A Jira workflow condition example using expression, custom UI, and
+        condition configuration.
+      expression: issue.summary.includes(config['searchString']) == true
+      view:
+        resource: custom-ui-expression
+      edit:
+        resource: custom-ui-expression
+      create:
+        resource: custom-ui-expression
+  trigger:
+    - key: work-and-gam-e-appapp-failed-expression-trigger
+      function: listen
+      events:
+        - avi:jira:failed:expression
+  function:
+    - key: listen
+      handler: index.listen
+resources:
+  - key: custom-ui-expression
+    path: static/custom-ui-expression/build
+permissions:
+  scopes:
+    - manage:jira-configuration
+  content:
+    styles:
+      - unsafe-inline
+app:
+  id: ari:cloud:ecosystem::app/9e5f2659-76ff-42c1-93a1-6eb4883b32cd
