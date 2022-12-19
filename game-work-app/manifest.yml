@@ -1,0 +1,10 @@
+modules:
+  jiraServiceManagement:queuePage:
+    - key: game-work-app-hello-world-queue-page
+      function: main
+      title: game-work-app
+  function:
+    - key: main
+      handler: index.run
+app:
+  id: ari:cloud:ecosystem::app/75f53e90-aeab-41d6-af80-bb48453399ac
