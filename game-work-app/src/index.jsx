@@ -1,4 +1,6 @@
-import ForgeUI, { render, QueuePage, Fragment, Text } from '@forge/ui';
+import ForgeUI, { 
+    render, QueuePage, Fragment, Text 
+} from '@forge/ui';
 
 const App = () => {
     return (
