@@ -1,0 +1,38 @@
+{
+    "name": "devs-unleashed-forge-app-starter",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@bitbucket.org:atlassian/devs-unleashed-forge-app-starter.git"
+    },
+    "private": true,
+    "author": "Atlassian",
+    "license": "SEE LICENSE IN /LICENSE",
+    "homepage": "https://bitbucket.org/atlassian/devs-unleashed-forge-app-starter/src/master/README.md",
+    "scripts": {
+        "format": "npx prettier --write ./static ./src ./README.md",
+        "lint": "./node_modules/.bin/eslint src/**/* || npm run --silent hook-errors",
+        "hook-errors": "echo '\\x1b[31mThe build failed because a Forge UI hook is being used incorrectly. Forge UI hooks follow the same rules as React Hooks but have their own API definitions. See the Forge documentation for details on how to use Forge UI hooks.\n' && exit 1",
+        "watch:game-resource": "yarn workspace devs-unleashed-game-resource start",
+        "build:game-resource": "yarn workspace devs-unleashed-game-resource build",
+        "watch": "yarn watch:game-resource",
+        "build": "yarn workspaces run build",
+        "build-deploy": "yarn build && forge deploy",
+        "startt": "PARCEL_WORKERS=0 parcel watch public/index.html --no-hmr --no-cache",
+        "stark": "node index.js"
+     
+    },
+    "workspaces": [
+        "static/game-resource"
+    ],
+    "devDependencies": {
+        "eslint": "^8.8.0",
+        "eslint-plugin-react-hooks": "^4.3.0",
+        "prettier": "2.6.2"
+    },
+    "dependencies": {
+        "@forge/api": "^2.7.0",
+        "@forge/resolver": "^1.4.7"
+    }
+}
