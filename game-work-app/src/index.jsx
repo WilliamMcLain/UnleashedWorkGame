@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import api, { route } from "@forge/api";
 import ForgeUI, { render, Fragment, Text, Macro, useProductContext, useState } from '@forge/ui';
 
@@ -9,6 +10,13 @@ const fetchCommentsForContent = async (contentId) => {
   const data = await res.json();
   return data.results;
 };
+=======
+import ForgeUI, { 
+    render, QueuePage, Fragment, Text 
+} from '@forge/ui';
+
+//test push 
+>>>>>>> 6207ab7db06661823d75c05bd10dc130f5e9bdb7
 
 const App = () => {
   const context = useProductContext();
