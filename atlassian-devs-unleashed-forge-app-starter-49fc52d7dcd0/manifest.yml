@@ -61,4 +61,4 @@ permissions:
         - '*.atlassian.net'
         - '*.atl-paas.net'
 app:
-  id: ari:cloud:ecosystem::app/b082e2e2-17b4-4232-97f4-1bfbd5acad85
+  id: ari:cloud:ecosystem::app/26dd5e55-207a-48bc-89b0-7d6b9c31ed43

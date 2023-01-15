@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { invoke, view } from '@forge/bridge';
 import { RESOLVERS } from '../../../src/types';
 
-class DevsUnleashedStarter extends Phaser.Scene {
+class FarmWorkApp extends Phaser.Scene {
     width;
     height;
 
@@ -13,6 +13,7 @@ class DevsUnleashedStarter extends Phaser.Scene {
     projects = {};
     spaces = {};
 
+    //main canvas create
     async create() {
         this.width = this.cameras.main.width;
         this.height = this.cameras.main.height;
@@ -27,29 +28,37 @@ class DevsUnleashedStarter extends Phaser.Scene {
 
         this.createLoadingBar();
 
+        //here is where product load from the load section
         if (this.product === 'jira') {
             this.loadJiraProjectsAvatars();
         }
 
-        if (this.product === 'confluence') {
-            this.loadConfluenceSpacesAvatars();
-        }
+        // if (this.product === 'confluence') {
+        //     this.loadConfluenceSpacesAvatars();
+        // }
     }
 
+    //things being loaded here
     loadCompleted() {
-        this.make
-            .text({
-                x: this.width / 2,
-                y: this.height / 2 - 50,
-                text: this.moduleType,
-                style: {
-                    font: '36px',
-                },
-            })
-            .setOrigin(0.5, 0.5);
+        // this.make
+        //     .text({
+        //         x: this.width / 2,
+        //         y: this.height / 2 - 50,
+        //         text: this.moduleType,
+        //         style: {
+        //             font: '36px',
+        //         },
+        //     })
+        //     .setOrigin(0.5, 0.5);
+        let bg = this.add.sprite(0, 0, 'background');
+        bg.setOrigin(0,0)
+
+        let block = this.add.sprite(20,20,'block');
     }
 
+    //what this was doing was for every project, it would load an avatar present
     async loadJiraProjectsAvatars() {
+        //finds the projects in jira currecntly
         invoke(RESOLVERS.GET_PROJECTS, { expand: 'urls' }).then(({ data }) => {
             data.values.forEach((project) => {
                 this.projects[project.key] = {
@@ -58,15 +67,24 @@ class DevsUnleashedStarter extends Phaser.Scene {
                     avatarUrl: project.avatarUrls['48x48'],
                 };
 
+                //this loads images that don't exist right now
+                this.load.image('block', 'images/block.png');
+                
+                
+                //specific to proj key
                 this.load.image(
                     this.projects[project.key].avatarKey,
                     this.projects[project.key].avatarUrl,
                 );
             });
 
+            this.load.image('background', 'images/background.png');
+
             this.load.start();
         });
 
+        
+        //once load this will add image in scene
         this.load.on('complete', () => {
             for (const projectKey in this.projects) {
                 const project = this.projects[projectKey];
@@ -78,32 +96,33 @@ class DevsUnleashedStarter extends Phaser.Scene {
         });
     }
 
-    async loadConfluenceSpacesAvatars() {
-        invoke(RESOLVERS.GET_SPACES, { expand: ['icon'] }).then(({ data }) => {
-            data.results.forEach((space) => {
-                console.log(space);
+    // async loadConfluenceSpacesAvatars() {
+    //     invoke(RESOLVERS.GET_SPACES, { expand: ['icon'] }).then(({ data }) => {
+    //         data.results.forEach((space) => {
+    //             console.log(space);
 
-                this.spaces[space.key] = {
-                    key: space.key,
-                    name: space.name,
-                };
+    //             this.spaces[space.key] = {
+    //                 key: space.key,
+    //                 name: space.name,
+    //             };
 
-                const x = Phaser.Math.Between(0, 800);
-                const y = Phaser.Math.Between(0, 600);
+    //             const x = Phaser.Math.Between(0, 800);
+    //             const y = Phaser.Math.Between(0, 600);
 
-                const spaceKeyText = this.add.text(x, y, `[${space.key}] ${space.name}`, {
-                    style: {
-                        font: '24px',
-                    },
-                });
+    //             const spaceKeyText = this.add.text(x, y, `[${space.key}] ${space.name}`, {
+    //                 style: {
+    //                     font: '24px',
+    //                 },
+    //             });
 
-                this.matter.add.gameObject(spaceKeyText);
-            });
+    //             this.matter.add.gameObject(spaceKeyText);
+    //         });
 
-            this.load.start();
-        });
-    }
+    //         this.load.start();
+    //     });
+    // }
 
+    //just load bar
     createLoadingBar() {
         const progressBar = this.add.graphics();
         const progressBox = this.add.graphics();
@@ -113,12 +132,12 @@ class DevsUnleashedStarter extends Phaser.Scene {
         const loadingText = this.make.text({
             x: this.width / 2,
             y: this.height / 2 - 50,
-            text: 'Loading...',
+            text: 'Please Wait',
             style: {
                 font: '20px monospace',
             },
         });
-        loadingText.setOrigin(0.5, 0.5);
+        loadingText.setOrigin(0, 0);
 
         const percentText = this.make.text({
             x: this.width / 2,
@@ -128,15 +147,17 @@ class DevsUnleashedStarter extends Phaser.Scene {
                 font: '18px monospace',
             },
         });
-        percentText.setOrigin(0.5, 0.5);
+        percentText.setOrigin(0, 0);
 
+        //load bar
         this.load.on('progress', (value) => {
             percentText.setText(`${value * 100}%`);
             progressBar.clear();
-            progressBar.fillStyle(0xffffff, 1);
+            progressBar.fillStyle(0x00ff00, 1);
             progressBar.fillRect(250, 280, 300 * value, 30);
         });
-
+        
+        //when complete run load completed method
         this.load.on('complete', () => {
             progressBar.destroy();
             progressBox.destroy();
@@ -148,9 +169,10 @@ class DevsUnleashedStarter extends Phaser.Scene {
     }
 }
 
+//constant for phaser game here
 const config = {
     type: Phaser.WEBGL,
-    backgroundColor: '#0052CC',
+    backgroundColor: '#00FF00',
     parent: 'phaser-example',
     scale: {
         mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
@@ -171,48 +193,47 @@ const config = {
             setBounds: true,
         },
     },
-    scene: DevsUnleashedStarter,
+    scene: FarmWorkApp,
 };
 
+
+//define of game 
 const game = new Phaser.Game(config);
 
 
 
 
 
-// import React from 'react'
-// import Phaser from 'phaser'
-// import { IonPhaser } from '@ion-phaser/react'
+//may not work below
+const canvas = document.querySelector('canvas')
+const c = canvas.getContext('2d')
 
-// const game = {
-//   width: "100%",
-//   height: "100%",
-//   type: Phaser.AUTO,
-//   scene: {
-//     init: function() {
-//       this.cameras.main.setBackgroundColor('#24252A')
-//     },
-//     create: function() {
-//       this.helloWorld = this.add.text(
-//         this.cameras.main.centerX, 
-//         this.cameras.main.centerY, 
-//         "Hello World", { 
-//           font: "40px Arial", 
-//           fill: "#ffffff" 
-//         }
-//       );
-//       this.helloWorld.setOrigin(0.5);
-//     },
-//     update: function() {
-//       this.helloWorld.angle += 1;
-//     }
-//   }
-// }
+canvas.width = 800
+canvas.height = 600
 
-// const App = () => {
-//   return (
-//     <IonPhaser game={game} />
-//   )
-// }
+c.fillRect(0,0,canvas.width,canvas.height)
 
-// export default App;
+//creates block
+class Sprite {
+    constructor(position) {
+        this.position = position
+    }
+
+    createBlock() {
+        c.fillStyle = 'red'
+        c.fillRect(this.position.x,this.position.y,20,20)
+
+    }
+}
+
+
+const block = new Sprite({
+    x: 0,
+    y: 0
+})
+
+block.draw()
+
+
+
+
